@@ -1,0 +1,49 @@
+CREATE DATABASE bd_sistema_gas;
+
+USE bd_sistema_gas;
+
+CREATE TABLE proveedor(
+Nombre VARCHAR(45) NOT NULL,
+Telefono VARCHAR(45) NOT NULL,
+Numerodecuenta VARCHAR(45) NOT NULL,
+Direccion VARCHAR(45) NOT NULL,
+CorreoElectronico VARCHAR(45) NOT NULL,
+IDProveedor INT NOT NULL AUTO_INCREMENT PRIMARY KEY
+);
+
+CREATE TABLE cliente(
+Nombre VARCHAR(45) NOT NULL,
+Direccion VARCHAR(45) NOT NULL,
+Telefono VARCHAR(45) NOT NULL,
+Descuento TINYINT(1),
+IDCliente INT NOT NULL AUTO_INCREMENT PRIMARY KEY
+);
+
+CREATE TABLE producto(
+Tipos VARCHAR(45) NOT NULL,
+IDProveedor INT(9) NOT NULL,
+Peso INT(9) NOT NULL,
+Precio INT(9) NOT NULL,
+IDProducto INT NOT NULL AUTO_INCREMENT PRIMARY KEY
+);
+
+CREATE TABLE venta(
+IDVenta INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+IDCliente INT NOT NULL,
+IDProducto INT NOT NULL,
+Cantidad INT NOT NULL,
+Fecha DATE NOT NULL
+);
+ALTER TABLE producto ADD CONSTRAINT fk_IDProveedor FOREIGN KEY (IDProveedor) REFERENCES proveedor(IDProveedor) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE venta ADD CONSTRAINT fk_IDCliente FOREIGN KEY (IDCliente) REFERENCES cliente(IDCliente) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE venta ADD CONSTRAINT fk_IDProducto FOREIGN KEY (IDProducto) REFERENCES producto(IDProducto) ON DELETE CASCADE ON UPDATE CASCADE;
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+VISTA
+
+CREATE VIEW vista_venta AS
+SELECT e.IDVenta, i.Nombre AS Nombre, o.Tipos AS Producto, e.Cantidad, e.Fecha FROM bd_sistema_gas.venta e
+INNER JOIN bd_sistema_gas.cliente i
+ON i.IDCliente = e.IDVenta
+INNER JOIN bd_sistema_gas.producto o
+on o.IDProducto = e.IDVenta
